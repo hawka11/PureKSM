@@ -1,0 +1,5 @@
+
+rootProject.name = 'PureKSM'
+
+include 'ksm-core'
+
