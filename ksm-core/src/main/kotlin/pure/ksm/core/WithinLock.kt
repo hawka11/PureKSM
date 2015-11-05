@@ -1,8 +1,8 @@
 package pure.ksm.core
 
 import org.slf4j.LoggerFactory
-import pure.ksm.core.state.ErrorEvent
-import pure.ksm.core.state.ErrorFinalState
+import pure.ksm.core.ErrorEvent
+import pure.ksm.core.ErrorFinalState
 import java.util.concurrent.TimeUnit
 
 public class WithinLock(val repository: TransitionRepository, val stateMachine: StateMachine) {

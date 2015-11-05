@@ -1,9 +1,6 @@
 package pure.ksm.core
 
-import pure.ksm.core.state.FinalState
-import pure.ksm.core.state.State
-
-sealed class TelcoState : State {
+sealed class TelcoState {
     object InitialState : TelcoState()
 
     object RechargeRequested : TelcoState()
@@ -11,7 +8,7 @@ sealed class TelcoState : State {
     object RechargeComplete : TelcoState(), FinalState
 }
 
-sealed class TelcoEvent : Event {
+sealed class TelcoEvent {
     object Recharge : TelcoEvent()
 
     object RechargeConfirmed : TelcoEvent()

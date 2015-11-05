@@ -1,6 +1,5 @@
 package pure.ksm.core
 
-import pure.ksm.core.state.State
 import java.util.concurrent.TimeUnit
 
 interface TransitionRepository {
@@ -12,7 +11,7 @@ interface TransitionRepository {
     fun getInProgressIds(): Set<String>
 
     fun create(
-            initialState: State,
+            initialState: Any,
             initialContextData: List<Any>): String
 
     fun tryLock(stateMachineId: String, timeout: Long, timeUnit: TimeUnit): Lock?

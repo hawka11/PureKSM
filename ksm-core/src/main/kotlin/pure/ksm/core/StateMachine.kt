@@ -1,17 +1,15 @@
 package pure.ksm.core
 
 import org.slf4j.LoggerFactory
-import pure.ksm.core.state.ErrorFinalState
-import pure.ksm.core.state.State
 
 abstract class StateMachine {
 
     private val LOG = LoggerFactory.getLogger(StateMachine::class.java)
 
-    private val defByState: MutableMap<State, (context: Context, event: Event) -> Transition> = hashMapOf()
-    private val defByTransition: MutableMap<State, MutableMap<State, () -> Unit>> = hashMapOf()
+    private val defByState: MutableMap<Any, (context: Context, event: Any) -> Transition> = hashMapOf()
+    private val defByTransition: MutableMap<Any, MutableMap<Any, () -> Unit>> = hashMapOf()
 
-    public fun handle(last: Transition, event: Event): Transition {
+    public fun handle(last: Transition, event: Any): Transition {
 
         val next = try {
 
@@ -44,22 +42,22 @@ abstract class StateMachine {
         return next
     }
 
-    protected fun withState(state: State, def: (context: Context, event: Event) -> Transition) {
+    protected fun withState(state: Any, def: (context: Context, event: Any) -> Transition) {
         defByState.put(state, def);
     }
 
-    protected fun onTransition(state: State, next: State, f: () -> Unit) {
+    protected fun onTransition(state: Any, next: Any, f: () -> Unit) {
 
         if (!defByTransition.containsKey(state)) defByTransition[state] = hashMapOf()
 
         defByTransition[state]!!.put(next, f)
     }
 
-    protected fun unhandled(event: Event, context: Context): Transition {
+    protected fun unhandled(event: Any, context: Context): Transition {
         return Transition.To(ErrorFinalState(RuntimeException()), event, context)
     }
 
-    protected fun stay(state: State, event: Event, context: Context) = go(state, event, context)
+    protected fun stay(state: Any, event: Any, context: Context) = go(state, event, context)
 
-    protected fun go(state: State, event: Event, context: Context) = Transition.To(state, event, context)
+    protected fun go(state: Any, event: Any, context: Context) = Transition.To(state, event, context)
 }

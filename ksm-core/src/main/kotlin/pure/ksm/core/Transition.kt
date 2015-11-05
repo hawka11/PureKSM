@@ -1,22 +1,21 @@
 package pure.ksm.core
 
-import pure.ksm.core.state.State
 
 data class Transition(
-        val state: State,
-        val event: Event,
+        val state: Any,
+        val event: Any,
         val context: Context) {
 
     companion object {
-        fun Initial(state: State, context: Context): Transition {
+        fun Initial(state: Any, context: Context): Transition {
             return Transition(state, InitialEvent(), context)
         }
 
-        fun To(state: State, event: Event, context: Context): Transition {
+        fun To(state: Any, event: Any, context: Context): Transition {
             return Transition(state, event, context)
         }
     }
 }
 
-class InitialEvent : Event
+class InitialEvent
 
