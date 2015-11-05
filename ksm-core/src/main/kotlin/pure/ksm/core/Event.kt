@@ -1,4 +1,4 @@
 package pure.ksm.core
 
-interface Event {
-}
+interface Event
+
