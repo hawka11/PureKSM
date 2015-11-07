@@ -30,7 +30,7 @@ class StateMachineTest {
     private fun assertSuccessRechargeTransition(rechargeTransition: Transition, onTransitionResult: String) {
         assertTrue { rechargeTransition.state.javaClass == RechargeRequested.javaClass }
 
-        val data = rechargeTransition.context.mostRecent(TestData::class.java)
+        val data = rechargeTransition.context.mostRecent(TestData::class)
         assertTrue { data != null }
         assertTrue { data?.data.equals("recharge accepted") }
 
@@ -40,10 +40,12 @@ class StateMachineTest {
     private fun assertConfirmedTransition(confirmedTransition: Transition, onTransitionResult: String) {
         assertTrue { confirmedTransition.state.javaClass == RechargeComplete.javaClass }
 
-        val data = confirmedTransition.context.mostRecent(TestData::class.java)
+        val data = confirmedTransition.context.mostRecent(TestData::class)
         assertTrue { data != null }
         assertTrue { data?.data.equals("recharge confirmed") }
 
-        assertTrue { onTransitionResult.equals("initial->rechargeRequested:rechargeRequested->rechargeComplete:rechargeRequested->finalState:") }
+        assertTrue { onTransitionResult.contains("initial->rechargeRequested:") }
+        assertTrue { onTransitionResult.contains("rechargeRequested->rechargeComplete:") }
+        assertTrue { onTransitionResult.contains("rechargeRequested->finalState:") }
     }
 }

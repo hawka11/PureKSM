@@ -1,11 +1,11 @@
 package pure.ksm.core
 
+import kotlin.reflect.KClass
+
 public data class Context(val data: List<Any>) {
 
-    //TODO: test
-    fun <T> mostRecent(ofType: Class<T>): T? {
-        val found = data.findLast { it.javaClass.isAssignableFrom(ofType) }
-        return if (found != null) ofType.cast(found) else null
+    fun <T : Any> mostRecent(ofType: KClass<T>): T? {
+        return data.findLast { it.javaClass.isAssignableFrom(ofType.java) } as T?
     }
 
     fun append(extra: Any): Context {
