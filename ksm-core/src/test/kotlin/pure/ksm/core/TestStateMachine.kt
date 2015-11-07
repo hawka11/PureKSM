@@ -26,8 +26,12 @@ class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
             t("initial->rechargeRequested")
         }
 
-        onTransition(RechargeRequested, RechargeComplete) {
+        onTransition(RechargeRequested::class, RechargeComplete::class) {
             t("rechargeRequested->rechargeComplete")
+        }
+
+        onTransition(RechargeRequested::class, FinalState::class) {
+            t("rechargeRequested->finalState")
         }
 
     }

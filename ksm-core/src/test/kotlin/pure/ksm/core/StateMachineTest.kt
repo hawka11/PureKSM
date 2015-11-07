@@ -44,6 +44,6 @@ class StateMachineTest {
         assertTrue { data != null }
         assertTrue { data?.data.equals("recharge confirmed") }
 
-        assertTrue { onTransitionResult.equals("initial->rechargeRequested:rechargeRequested->rechargeComplete:") }
+        assertTrue { onTransitionResult.equals("initial->rechargeRequested:rechargeRequested->rechargeComplete:rechargeRequested->finalState:") }
     }
 }
