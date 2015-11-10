@@ -1,15 +1,16 @@
 package pure.ksm.core
 
 import org.slf4j.LoggerFactory
-import pure.ksm.core.ErrorEvent
-import pure.ksm.core.ErrorFinalState
 import java.util.concurrent.TimeUnit
 
-public class WithinLock(val repository: TransitionRepository, val stateMachine: StateMachine) {
+public object WithinLock {
 
     private val LOG = LoggerFactory.getLogger(WithinLock::class.java)
 
-    public fun invoke(id: String, f: (context: Context, stateMachine: StateMachine) -> Transition): Transition? {
+    public fun invokeAndUpdate(
+            id: String,
+            repository: TransitionRepository,
+            f: (context: Context) -> Transition): Transition? {
 
         var result: Transition? = null
 
@@ -17,7 +18,7 @@ public class WithinLock(val repository: TransitionRepository, val stateMachine: 
 
         if (lock != null) {
             try {
-                result = f(lock.getLatestTransition().context, stateMachine)
+                result = f(lock.getLatestTransition().context)
                 lock.update(result)
             } catch(e: Exception) {
                 result = Transition.To(ErrorFinalState(e), ErrorEvent, lock.getLatestTransition().context)

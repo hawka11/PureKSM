@@ -43,7 +43,7 @@ abstract class StateMachine {
         return next
     }
 
-    protected fun withState(state: Any, def: (context: Context, event: Any) -> Transition) = defByState.put(state, def)
+    protected fun onReceive(state: Any, def: (context: Context, event: Any) -> Transition) = defByState.put(state, def)
 
     protected fun onTransition(state: Any, next: Any, f: () -> Unit) = onTransition(state.javaClass, next.javaClass, f)
 
@@ -54,7 +54,7 @@ abstract class StateMachine {
         defByTransition.getRaw(state)!!.put(next, f)
     }
 
-    protected fun unhandled(event: Any, context: Context) = Transition.To(ErrorFinalState(RuntimeException()), event, context)
+    protected fun error(event: Any, context: Context) = Transition.To(ErrorFinalState(RuntimeException()), event, context)
 
     protected fun stay(state: Any, event: Any, context: Context) = go(state, event, context)
 
