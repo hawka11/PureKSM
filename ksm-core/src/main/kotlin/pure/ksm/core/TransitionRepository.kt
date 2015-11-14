@@ -4,32 +4,24 @@ import java.util.concurrent.TimeUnit
 
 interface TransitionRepository {
 
-    fun get(stateMachineId: String): Transition?
+    fun get(id: String): Transition?
 
-    fun getAllIds(): Set<String>
+    fun ids(): Set<String>
 
-    fun getInProgressIds(): Set<String>
+    fun create(state: Any, context: Context): String
 
-    fun create(
-            initialState: Any,
-            initialContextData: List<Any>): String
-
-    fun tryLock(stateMachineId: String, timeout: Long, timeUnit: TimeUnit): Lock?
+    fun tryLock(id: String, timeout: Long, timeUnit: TimeUnit): Lock?
 
     interface Lock {
 
-        fun getLatestTransition(): Transition
+        fun latest(): Transition
 
         fun update(transition: Transition)
 
-        /**
-         * Must be idempotent
-         */
+        //idempotent
         fun unlock(): Boolean
 
-        /**
-         * Must be idempotent
-         */
-        fun unlockAndRemove(): Boolean
+        //idempotent
+        fun remove(): Boolean
     }
 }

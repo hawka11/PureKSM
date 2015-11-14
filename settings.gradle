@@ -2,4 +2,5 @@
 rootProject.name = 'PureKSM'
 
 include 'ksm-core'
+include 'ksm-repository-inmemory'
 

@@ -7,7 +7,7 @@ public object WithinLock {
 
     private val LOG = LoggerFactory.getLogger(WithinLock::class.java)
 
-    public fun invokeAndUpdate(
+    public fun update(
             id: String,
             repository: TransitionRepository,
             f: (context: Context) -> Transition): Transition? {
@@ -18,16 +18,16 @@ public object WithinLock {
 
         if (lock != null) {
             try {
-                result = f(lock.getLatestTransition().context)
+                result = f(lock.latest().context)
                 lock.update(result)
             } catch(e: Exception) {
-                result = Transition.To(ErrorFinalState(e), ErrorEvent, lock.getLatestTransition().context)
+                result = Transition.To(ErrorFinalState(e), ErrorEvent, lock.latest().context)
                 lock.update(result)
             } finally {
                 lock.unlock()
             }
         } else {
-            LOG.warn("")
+            LOG.warn("Could not get lock for id $id")
         }
 
         return result

@@ -25,7 +25,7 @@ abstract class StateMachine {
 
         } catch (e: Exception) {
 
-            LOG.error("")
+            LOG.error("Error", e)
 
             Transition.To(ErrorFinalState(e), event, last.context)
         }
@@ -54,7 +54,7 @@ abstract class StateMachine {
         defByTransition.getRaw(state)!!.put(next, f)
     }
 
-    protected fun error(event: Any, context: Context) = Transition.To(ErrorFinalState(RuntimeException()), event, context)
+    protected fun error(event: Any, context: Context) = go(ErrorFinalState(RuntimeException()), event, context)
 
     protected fun stay(state: Any, event: Any, context: Context) = go(state, event, context)
 
