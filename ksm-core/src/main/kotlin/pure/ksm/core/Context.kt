@@ -9,10 +9,6 @@ public data class Context(val data: List<Any>) {
     }
 
     fun append(extra: Any): Context {
-        val all: MutableList<Any> = arrayListOf()
-        all.addAll(data)
-        all.add(extra)
-
-        return this.copy(data = all)
+        return this.copy(data = data + extra)
     }
 }

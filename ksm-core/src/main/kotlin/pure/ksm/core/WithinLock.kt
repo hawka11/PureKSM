@@ -10,7 +10,7 @@ public object WithinLock {
     public fun update(
             id: String,
             repository: TransitionRepository,
-            f: (context: Context) -> Transition): Transition? {
+            f: (transition: Transition) -> Transition): Transition? {
 
         var result: Transition? = null
 
@@ -18,7 +18,7 @@ public object WithinLock {
 
         if (lock != null) {
             try {
-                result = f(lock.latest().context)
+                result = f(lock.latest())
                 lock.update(result)
             } catch(e: Exception) {
                 result = Transition.To(ErrorFinalState(e), ErrorEvent, lock.latest().context)

@@ -3,4 +3,5 @@ rootProject.name = 'PureKSM'
 
 include 'ksm-core'
 include 'ksm-repository-inmemory'
+include 'ksm-end-to-end-tests'
 
