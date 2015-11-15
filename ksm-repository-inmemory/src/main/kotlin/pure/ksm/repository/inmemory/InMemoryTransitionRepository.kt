@@ -10,9 +10,9 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.locks.ReentrantLock
 
-public class InMemoryStateMachineRepository : TransitionRepository {
+public class InMemoryTransitionRepository : TransitionRepository {
 
-    private val LOG = LoggerFactory.getLogger(InMemoryStateMachineRepository::class.java)
+    private val LOG = LoggerFactory.getLogger(InMemoryTransitionRepository::class.java)
 
     private val idGenerator = AtomicLong(1000);
     private val transitionById = ConcurrentHashMap<String, Transition>();
