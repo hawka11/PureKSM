@@ -1,7 +1,6 @@
 package pure.ksm.core
 
-import pure.ksm.core.TelcoEvent.Recharge
-import pure.ksm.core.TelcoEvent.RechargeConfirmed
+import pure.ksm.core.TelcoEvent.*
 import pure.ksm.core.TelcoState.*
 
 class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
@@ -17,7 +16,8 @@ class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
 
         onReceive(RechargeRequested) { context, event ->
             when (event) {
-                is RechargeConfirmed -> go(RechargeComplete, event, context.append(TestData("recharge confirmed")))
+                is RechargeConfirmed -> go(RechargeCompleteFinal, event, context.append(TestData("recharge confirmed")))
+                is TimeoutTick -> checkTimeout(context)
                 else -> error(event, context)
             }
         }
@@ -26,7 +26,7 @@ class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
             t("initial->rechargeRequested")
         }
 
-        onTransition(RechargeRequested::class, RechargeComplete::class) {
+        onTransition(RechargeRequested::class, RechargeCompleteFinal::class) {
             t("rechargeRequested->rechargeComplete")
         }
 
@@ -34,5 +34,10 @@ class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
             t("rechargeRequested->finalState")
         }
 
+    }
+
+    private fun checkTimeout(context: Context): Transition {
+        //return if (context.) go(TelcoState.TimedoutFinal, TimeoutTick, context) else stay(context.state, TimeoutTick, context)
+        return go(TelcoState.TimeoutFinal, TimeoutTick, context)
     }
 }

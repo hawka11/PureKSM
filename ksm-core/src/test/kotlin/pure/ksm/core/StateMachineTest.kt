@@ -38,7 +38,7 @@ class StateMachineTest {
     }
 
     private fun assertConfirmedTransition(confirmedTransition: Transition, onTransitionResult: String) {
-        assertTrue { confirmedTransition.state.javaClass == RechargeComplete.javaClass }
+        assertTrue { confirmedTransition.state.javaClass == RechargeCompleteFinal.javaClass }
 
         val data = confirmedTransition.context.mostRecent(TestData::class)
         assertTrue { data != null }

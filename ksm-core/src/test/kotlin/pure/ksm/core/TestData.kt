@@ -5,13 +5,18 @@ sealed class TelcoState {
 
     object RechargeRequested : TelcoState()
 
-    object RechargeComplete : TelcoState(), FinalState
+    object RechargeCompleteFinal : TelcoState(), FinalState
+
+    object TimeoutFinal : TelcoState(), FinalState
+
 }
 
 sealed class TelcoEvent {
     object Recharge : TelcoEvent()
 
     object RechargeConfirmed : TelcoEvent()
+
+    object TimeoutTick : TelcoEvent()
 }
 
 data class TestData(val data: String)

@@ -12,17 +12,17 @@ public object WithinLock {
             repository: TransitionRepository,
             f: (transition: Transition) -> Transition): Transition? {
 
-        var result: Transition? = null
+        var next: Transition? = null
 
         val lock = repository.tryLock(id, 5, TimeUnit.SECONDS)
 
         if (lock != null) {
             try {
-                result = f(lock.latest())
-                lock.update(result)
+                next = f(lock.latest())
+                lock.update(next)
             } catch(e: Exception) {
-                result = Transition.To(ErrorFinalState(e), ErrorEvent, lock.latest().context)
-                lock.update(result)
+                next = Transition.To(ErrorFinalState(e), ErrorEvent, lock.latest().context)
+                lock.update(next)
             } finally {
                 lock.unlock()
             }
@@ -30,6 +30,7 @@ public object WithinLock {
             LOG.warn("Could not get lock for id $id")
         }
 
-        return result
+        return next
     }
+
 }
