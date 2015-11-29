@@ -35,6 +35,8 @@ class Cleanup(val timer: Timer, val repository: TransitionRepository) {
             } catch(e: Exception) {
                 LOG.warn("Something went wrong, removing [$id]")
                 lock.remove();
+            } finally {
+                lock.unlock()
             }
         } else {
             LOG.warn("Could not get lock for id $id")
