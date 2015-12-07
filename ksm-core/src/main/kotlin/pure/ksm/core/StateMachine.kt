@@ -7,7 +7,7 @@ abstract class StateMachine {
 
     private val LOG = LoggerFactory.getLogger(StateMachine::class.java)
 
-    private val defByState: MutableMap<Any, (context: Context, event: Any) -> Transition> = hashMapOf()
+    private val defByState: MutableMap<Any, (last: Transition, event: Any) -> Transition> = hashMapOf()
     private val defByTransition: MutableMap<Class<out Any>, MutableMap<Class<out Any>, () -> Unit>> = hashMapOf()
 
     public fun handle(last: Transition, event: Any): Transition {
@@ -19,7 +19,7 @@ abstract class StateMachine {
             val def = defByState[state]
 
             if (def != null)
-                def.invoke(last.context, event)
+                def.invoke(last, event)
             else
                 throw IllegalStateException("No Configuration for $state")
 
@@ -43,7 +43,7 @@ abstract class StateMachine {
         return next
     }
 
-    protected fun onReceive(state: Any, def: (context: Context, event: Any) -> Transition) = defByState.put(state, def)
+    protected fun onReceive(state: Any, def: (last: Transition, event: Any) -> Transition) = defByState.put(state, def)
 
     protected fun onTransition(state: Any, next: Any, f: () -> Unit) = onTransition(state.javaClass, next.javaClass, f)
 

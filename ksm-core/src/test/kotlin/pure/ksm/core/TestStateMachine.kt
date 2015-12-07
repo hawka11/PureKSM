@@ -2,23 +2,26 @@ package pure.ksm.core
 
 import pure.ksm.core.TelcoEvent.*
 import pure.ksm.core.TelcoState.*
+import java.time.OffsetDateTime
+
+public val TIMEOUT_SECS = 2L
 
 class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
 
     init {
 
-        onReceive(InitialState) { context, event ->
+        onReceive(InitialState) { last, event ->
             when (event) {
-                is Recharge -> go(RechargeRequested, event, context.append(TestData("recharge accepted")))
-                else -> error(event, context)
+                is Recharge -> go(RechargeRequested, event, last.context.append(TestData("recharge accepted")))
+                else -> error(event, last.context)
             }
         }
 
-        onReceive(RechargeRequested) { context, event ->
+        onReceive(RechargeRequested) { last, event ->
             when (event) {
-                is RechargeConfirmed -> go(RechargeCompleteFinal, event, context.append(TestData("recharge confirmed")))
-                is TimeoutTick -> checkTimeout(context)
-                else -> error(event, context)
+                is RechargeConfirmed -> go(RechargeCompleteFinal, event, last.context.append(TestData("recharge confirmed")))
+                is TimeoutTick -> checkTimeout(last)
+                else -> error(event, last.context)
             }
         }
 
@@ -36,8 +39,9 @@ class TestStateMachine(val t: Function1<String, Any>) : StateMachine() {
 
     }
 
-    private fun checkTimeout(context: Context): Transition {
-        //return if (context.) go(TelcoState.TimedoutFinal, TimeoutTick, context) else stay(context.state, TimeoutTick, context)
-        return go(TelcoState.TimeoutFinal, TimeoutTick, context)
-    }
+    private fun checkTimeout(last: Transition) = if (isTimeout(last))
+        go(TelcoState.TimeoutFinal, TimeoutTick, last.context) else
+        stay(last.state, TimeoutTick, last.context)
+
+    private fun isTimeout(last: Transition) = OffsetDateTime.now().isAfter(last.transitioned.plusSeconds(TIMEOUT_SECS))
 }
